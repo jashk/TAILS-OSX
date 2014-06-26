@@ -15,7 +15,7 @@ fi
 
 set -x
 TAILS_ISO_URL="http://dl.amnesia.boum.org/tails/stable/tails-i386-1.0.1/tails-i386-1.0.1.iso"
-TAILS_SIG_URL="http://dl.amnesia.boum.org/tails/stable/tails-i386-1.0.1/tails-i386-1.0.1.iso.sig"
+TAILS_SIG_URL="https://tails.boum.org/torrents/files/tails-i386-1.0.1.iso.sig"
 TAILS_KEY_URL="https://tails.boum.org/tails-signing.key"
 
 if [ ! -d "data" ]; then
@@ -84,7 +84,8 @@ verify_tails () {
 }
 
 download_tails () {
-  curl -k -o data/tails.iso $TAILS_ISO_URL
+  curl -k -o data/tails-tmp.iso $TAILS_ISO_URL
+  mv data/tails-tmp.iso data/tails.iso
 }
 
 list_disks () {
@@ -139,7 +140,7 @@ create_image () {
   cp grub.cfg $DISK_PATH/efi/boot/
 
   echo "[+] Copying live directory"
-  cp -R $ISO_PATH/live $DISK_PATH/live
+  rsync -ah --progress $ISO_PATH/live $DISK_PATH
 
   echo "All done"
 }
